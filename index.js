@@ -39,7 +39,12 @@ function loadXml( objData ){
         $("#qtdtotal").append("<h1>" + objData['summary'].ntotal + "</h1>")
     });
     
-      $(document).ready(function() {          
+    $(document).ready(function(){
+        $("#qtdinfo").append("<h1>" + objData['summary'].ninfo + "</h1>")
+    });
+    
+      $(document).ready(function() { 
+                   
         var table = $('#tableMain').DataTable( {              
             //"ajax": "jsonout.txt", 
             data: objData.data,
@@ -85,7 +90,8 @@ function reqListener(){
 
     var nskipped = 0;
     var nerror = 0;
-    var nsucess = 0;
+    var nsucess = 0;    
+    var ninfo = 0;
     var ntotal = 0;
     var objData = {};
     var xmlstr = this.responseText;   
@@ -95,7 +101,7 @@ function reqListener(){
     var x = xmlDoc.getElementsByTagName("testcase");
     ntotal = x.length;
     var testcases = [];  
-    for (i = 0; i < x.length; i++) { 
+    for (let i = 0; i < x.length; i++) { 
         
         var status = "";
         var arrSubData = [];  
@@ -106,31 +112,31 @@ function reqListener(){
         if ( x[i].children.length == 0 ){
             nsucess++;
             status = "OK";
-        }
+        }else{
 
-        //Array subdata    
-        for (let y = 0; y < x[i].children.length; y++) {
-            const el = x[i].children[y];
-
-            type = el.getAttribute('type');
-            if(type === "Skipped"){
-                nskipped++; 
-                status = "SKIPPED"; 
-            }else if(type === "Error"){
-                nerror++; 
-                status = "ERROR"; 
+            //Array subdata    
+            for (let y = 0; y < x[i].children.length; y++) {
+                const el = x[i].children[y];
+                type = el.getAttribute('type');
+                 if(type === "Skipped"){
+                    if(y == 0){nskipped++;} 
+                    status = "SKIPPED"; 
+                }else if(type === "Error"){
+                    if(y == 0){nerror++;}
+                    status = "ERROR";                 
+                }else if(type === "Info"){
+                    if(y == 0){ninfo++;} 
+                    status = "INFO"; 
+                }                
+                message = el.getAttribute('message'), 
+                text = el.innerHTML;
+                arrSubData.push( { type:type, message:message, text:text } );
             }
-            
-            message = el.getAttribute('message'), 
-            text = el.innerHTML;
-
-            arrSubData.push( { type:type, message:message, text:text } );
         }
-        
         testcases.push({ id:id, name:name, time:time, status:status, subData:arrSubData  });
     }
     
-    var summary = { nskipped:nskipped, nerror:nerror, nsucess:nsucess, ntotal:ntotal };
+    var summary = { nskipped:nskipped, nerror:nerror, nsucess:nsucess, ninfo:ninfo, ntotal:ntotal };
     objData = { data:testcases, summary:summary };
     loadXml( objData );
 
@@ -149,8 +155,6 @@ function TecTest(){
 
 
 /* ===================== FUNÇOES PARA O EXCEPTION ===================== */
-
-
 
   /*------------------------------------------
     Recebe um object json, monta tabela com ele  
