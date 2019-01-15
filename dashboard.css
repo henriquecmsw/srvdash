@@ -109,3 +109,24 @@ td.details-control {
   background-size: 15px 15px;
   cursor: pointer;
 }
+
+.sorting_1{
+  background-color: blueviolet;
+}
+
+.bg-danger{
+  background-color: rgba(255, 0, 0, 0.8)
+}
+
+.bg-warning{
+  background-color: rgba(255, 255, 0, 0.8)
+}
+
+.bg-success{
+  background-color: rgba(0, 255, 0, 0.8)
+}
+
+.bg-success{
+  background-color: rgba(0, 255, 255, 0.8)
+}
+
