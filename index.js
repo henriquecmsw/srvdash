@@ -1,7 +1,7 @@
   /*------------------------------------------
     Monta html tabela 
  ------------------------------------------*/
-function format(d){
+ function format(d){
     var descFalhas = function(){            
         var falhas = "";
         for (let i = 0; i < d.subData.length; i++){                
@@ -51,7 +51,7 @@ function loadXml( objData ){
             "columns": [
                 {
                     "className":      'details-control',
-                    "orderable":      false,
+                    "orderable":      true,
                     "data":           null,
                     "defaultContent": ''
                 },
@@ -60,8 +60,28 @@ function loadXml( objData ){
                 { "data": "time" },
                 { "data": "status" }                  
             ],
-            "order": [[1, 'asc']]
-        } );
+            "order": [[1, 'asc']],
+            "fnRowCallback": function( row, data, index ) {
+                //debugger
+                if ( data["status"] == "ERROR" )
+                {
+                    $('td', row).addClass('bg-danger');
+                }
+                else if ( data["status"] == "SKIPPED" )
+                {
+                    $('td', row).addClass('bg-warning');
+                }
+                else if ( data["status"] == "OK" )
+                {
+                    $('td', row).addClass('bg-success');
+                }
+                else if ( data["status"] == "INFO" )
+                {
+                    $('td', row).addClass('bg-info');
+                }
+                
+            }
+        });
         
         // Add event listener for opening and closing details
         $('#tableMain tbody').on('click', 'td.details-control', function () {
